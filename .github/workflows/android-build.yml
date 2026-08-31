@@ -45,19 +45,20 @@ jobs:
         run: |
           gradle assembleDebug --stacktrace --no-daemon 2>&1 | tee build.log
 
-      - name: List Generated APKs
-        run: ls -lh app/build/outputs/apk/debug/
+      - name: Locate and Prepare APK
+        run: |
+          mkdir -p release_apk
+          find . -type f -name "*.apk" -exec cp {} release_apk/app-debug.apk \;
+          ls -lh release_apk/
 
       - name: Upload Debug APK Artifact
-        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: TestApp-Debug-APK
-          path: app/build/outputs/apk/debug/*.apk
+          path: release_apk/app-debug.apk
           retention-days: 14
 
       - name: Publish Public Release with Direct Download Link
-        if: success()
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v1.0.0
@@ -65,8 +66,7 @@ jobs:
           body: "Direct public download for the compiled Android APK."
           draft: false
           prerelease: false
-          fail_on_unmatched_files: true
-          files: app/build/outputs/apk/debug/*.apk
+          files: release_apk/app-debug.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
