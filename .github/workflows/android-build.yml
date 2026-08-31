@@ -43,7 +43,11 @@ jobs:
 
       - name: Build Debug APK
         run: |
-          gradle :app:assembleDebug --stacktrace --no-daemon
+          gradle :app:assembleDebug --stacktrace --no-daemon 2>&1 | tee build.log || {
+            echo "==== BUILD LOG ERROR ===="
+            cat build.log
+            exit 1
+          }
 
       - name: Prepare APK for Release
         run: |
