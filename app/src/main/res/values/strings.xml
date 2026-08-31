@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Antigravity Test App</string>
+    <string name="welcome_title">Cloud Build Test App</string>
+    <string name="welcome_subtitle">Created on your laptop, compiled in GitHub Cloud!</string>
+    <string name="counter_label">Button Click Count: 0</string>
+    <string name="click_me">Tap Me!</string>
+    <string name="reset">Reset</string>
+</resources>
