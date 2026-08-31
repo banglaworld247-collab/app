@@ -43,12 +43,12 @@ jobs:
 
       - name: Build Debug APK
         run: |
-          gradle assembleDebug --stacktrace --no-daemon 2>&1 | tee build.log
+          gradle :app:assembleDebug --stacktrace --no-daemon
 
-      - name: Locate and Prepare APK
+      - name: Prepare APK for Release
         run: |
           mkdir -p release_apk
-          find . -type f -name "*.apk" -exec cp {} release_apk/app-debug.apk \;
+          cp app/build/outputs/apk/debug/app-debug.apk release_apk/app-debug.apk
           ls -lh release_apk/
 
       - name: Upload Debug APK Artifact
