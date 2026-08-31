@@ -25,13 +25,13 @@ jobs:
       - name: Configure Android SDK & Accept Licenses
         run: |
           mkdir -p "$ANDROID_HOME/licenses" || true
-          echo -e "24333f8a63b6825ea9c5514f83c2829b004d1fee\nd975f78077227e82f33e50e82d4e94713708a498\n84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_HOME/licenses/android-sdk-license"
-          echo -e "84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_HOME/licenses/android-sdk-preview-license"
-          echo -e "e9acab5b5fbb560a72cfa4ce73052bc0b45b1613" > "$ANDROID_HOME/licenses/mips-android-sdk-license"
-          echo -e "601085b94cd77f0b54ff86406957099fed7926e0" > "$ANDROID_HOME/licenses/android-googletv-license"
-          echo -e "33b6a2b64607f11b759f32049dff4ef50c2b9033" > "$ANDROID_HOME/licenses/google-gdk-license"
-          echo -e "e6b7c2ab7fa2204c1529720e3702feb600022722" > "$ANDROID_HOME/licenses/intel-android-extra-license"
-          echo -e "856e2d410d73414f77c831309b953f4f7e61a645" > "$ANDROID_HOME/licenses/android-sdk-arm-dbt-license"
+          printf "24333f8a63b6825ea9c5514f83c2829b004d1fee\nd975f78077227e82f33e50e82d4e94713708a498\n84831b9409646a918e30573bab4c9c91346d8abd\n" > "$ANDROID_HOME/licenses/android-sdk-license"
+          printf "84831b9409646a918e30573bab4c9c91346d8abd\n" > "$ANDROID_HOME/licenses/android-sdk-preview-license"
+          printf "e9acab5b5fbb560a72cfa4ce73052bc0b45b1613\n" > "$ANDROID_HOME/licenses/mips-android-sdk-license"
+          printf "601085b94cd77f0b54ff86406957099fed7926e0\n" > "$ANDROID_HOME/licenses/android-googletv-license"
+          printf "33b6a2b64607f11b759f32049dff4ef50c2b9033\n" > "$ANDROID_HOME/licenses/google-gdk-license"
+          printf "e6b7c2ab7fa2204c1529720e3702feb600022722\n" > "$ANDROID_HOME/licenses/intel-android-extra-license"
+          printf "856e2d410d73414f77c831309b953f4f7e61a645\n" > "$ANDROID_HOME/licenses/android-sdk-arm-dbt-license"
           echo "sdk.dir=$ANDROID_HOME" > local.properties
 
       - name: Setup Gradle
@@ -41,7 +41,7 @@ jobs:
 
       - name: Build Debug APK
         run: |
-          gradle assembleDebug --stacktrace --no-daemon
+          gradle assembleDebug --stacktrace --no-daemon 2>&1 | tee build.log
 
       - name: Upload Debug APK Artifact
         if: success()
@@ -50,3 +50,11 @@ jobs:
           name: TestApp-Debug-APK
           path: app/build/outputs/apk/debug/*.apk
           retention-days: 14
+
+      - name: Upload Build Log on Failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-failure-log
+          path: build.log
+
